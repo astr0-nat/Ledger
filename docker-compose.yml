@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level info --access-log
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - REALM_ID_TEXAS=${REALM_ID_TEXAS}
+      - REALM_ID_PORTLAND=${REALM_ID_PORTLAND}
+      - REALM_ID_GEORGIA=${REALM_ID_GEORGIA}
+      - QB_ACCOUNTS=${QB_ACCOUNTS}
+      - MAX_QB_DOC_NUM_LEN=${MAX_QB_DOC_NUM_LEN}
+      - PYTHONBUFFERED=1
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+  redis:
+    image: redis:6
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:
+
+
